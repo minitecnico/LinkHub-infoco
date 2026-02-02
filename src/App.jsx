@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
-  Link2, Globe, FileText, User, Mail, Phone, Home, Layers, Lock, X, Plus, 
+  Link2, Globe, FileText, User, Mail, Phone, Home, Layers, Lock, X, Plus,EyeOff, 
   Pencil, Trash2, Eye, LogOut, BarChart3, Palette, Share2, GripVertical, 
   Check, Instagram, Facebook, Linkedin, Youtube, ExternalLink, Settings, 
   Sparkles, Zap, Star, Heart, ShoppingBag, Calendar, MapPin, Music, 
@@ -106,7 +106,7 @@ export default function LinkHub() {
       setIsLoginOpen(false);
       setPasswordInput("");
     } else {
-      alert("Senha Incorreta!");
+      alert("⚠️Senha Incorreta⚠️!");
     }
   };
 
@@ -212,6 +212,24 @@ export default function LinkHub() {
                       <input className="w-full bg-transparent font-black text-xl text-slate-800 outline-none" value={link.title} onChange={(e) => setData(p => ({...p, links: p.links.map(l => l.id === link.id ? {...l, title: e.target.value} : l)}))} />
                       <input className="w-full bg-transparent text-blue-500 text-sm outline-none" value={link.url} onChange={(e) => setData(p => ({...p, links: p.links.map(l => l.id === link.id ? {...l, url: e.target.value} : l)}))} />
                     </div>
+                    {/* --- BOTÃO LIGAR/DESLIGAR (ADICIONE ESTE) --- */}
+<button 
+  onClick={() => setData({
+    ...data, 
+    links: data.links.map(l => l.id === link.id ? {...l, active: !l.active} : l)
+  })}
+  className={`w-12 h-12 flex items-center justify-center rounded-2xl transition-all ${link.active ? 'text-green-500 bg-green-50' : 'text-slate-300 bg-slate-100'}`}
+>
+  {link.active ? <Eye size={22} /> : <EyeOff size={22} />}
+</button>
+
+{/* --- BOTÃO LIXEIRA (QUE JÁ EXISTE LÁ) --- */}
+<button 
+  onClick={() => setData(p => ({...p, links: p.links.filter(l => l.id !== link.id)}))}
+  className="w-12 h-12 flex items-center justify-center rounded-2xl text-slate-300 hover:text-red-500 transition-all"
+>
+  <Trash2 size={22} />
+</button>
                     <button onClick={() => { setData(p => ({...p, links: p.links.filter(l => l.id !== link.id)})); showToast("Link removido."); }} className="w-12 h-12 flex items-center justify-center rounded-2xl text-slate-300 hover:text-red-500 transition-all"><Trash2 size={22} /></button>
                   </div>
                 ))}
