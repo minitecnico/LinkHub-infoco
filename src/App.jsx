@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
-  Link2, Globe, FileText, User, Mail, Phone, Home, Layers, Lock, X, Plus,EyeOff, 
+  Link2, Globe, FileText, User, Mail, Phone, Home, Layers, Lock, X, Plus,  
   Pencil, Trash2, Eye, LogOut, BarChart3, Palette, Share2, GripVertical, 
   Check, Instagram, Facebook, Linkedin, Youtube, ExternalLink, Settings, 
   Sparkles, Zap, Star, Heart, ShoppingBag, Calendar, MapPin, Music, 
   Camera, Video, Headphones, Coffee, Gift, Award, Bookmark, Send, 
   MessageCircle, Briefcase, Building2, GraduationCap, Rocket, Target, 
-  TrendingUp, Users, Crown, Diamond, Flame, ChevronRight, Info, MousePointer2
+  TrendingUp, Users, Crown, Diamond, Flame, ChevronRight, Info, MousePointer2, EyeOff,
 } from 'lucide-react';
 
 const iconMap = { 
@@ -211,8 +211,7 @@ export default function LinkHub() {
                     <div className="flex-1 space-y-2">
                       <input className="w-full bg-transparent font-black text-xl text-slate-800 outline-none" value={link.title} onChange={(e) => setData(p => ({...p, links: p.links.map(l => l.id === link.id ? {...l, title: e.target.value} : l)}))} />
                       <input className="w-full bg-transparent text-blue-500 text-sm outline-none" value={link.url} onChange={(e) => setData(p => ({...p, links: p.links.map(l => l.id === link.id ? {...l, url: e.target.value} : l)}))} />
-                    </div>
-                    {/* --- BOTÃO LIGAR/DESLIGAR (ADICIONE ESTE) --- */}
+                    </div>                 
 <button 
   onClick={() => setData({
     ...data, 
