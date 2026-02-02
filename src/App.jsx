@@ -62,11 +62,57 @@ const Modal = ({ isOpen, onClose, children, title }) => {
 // --- CONFIGURAÇÃO DE SEGURANÇA ---
 const MINHA_SENHA_MESTRA = "tpshow26"; // <--- MUDE SUA SENHA AQUI!
 
+// --- COPIAR DAQUI ---
+const WidgetsDinamicos = () => {
+  const [weather, setWeather] = useState({ temp: '28°', desc: 'Itabuna/BA' });
+  const [newsIndex, setNewsIndex] = useState(0);
+  
+  const noticias = [
+    "📈 Nova Lei de Licitações: Prazos atualizados para 2026",
+    "💻 SICC® ganha nova interface para dispositivos móveis",
+    "🏛️ Transparência: Bahia lidera ranking de portais públicos",
+    "🚀 Infoco Gestão Pública expande suporte para o sul do estado"
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNewsIndex((prev) => (prev + 1) % noticias.length);
+    }, 4000); // Troca a notícia a cada 4 segundos
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="w-full max-w-md grid grid-cols-2 gap-4 mb-8 animate-in fade-in duration-1000">
+      {/* Card de Clima (Glassmorphism) */}
+      <div className="p-4 rounded-[2rem] bg-white/10 backdrop-blur-xl border border-white/20 flex flex-col items-center justify-center text-center shadow-lg">
+        <CloudSun className="text-blue-300 mb-1" size={28} />
+        <span className="text-2xl font-black text-white">{weather.temp}</span>
+        <span className="text-[10px] uppercase font-bold tracking-tighter text-white/60">{weather.desc}</span>
+      </div>
+
+      {/* Card de Notícias (Glassmorphism) */}
+      <div className="p-4 rounded-[2rem] bg-white/10 backdrop-blur-xl border border-white/20 flex flex-col justify-between shadow-lg overflow-hidden">
+        <div className="flex items-center gap-2 mb-1">
+          <Newspaper size={14} className="text-blue-300" />
+          <span className="text-[10px] uppercase font-black tracking-widest text-white/40">Notícias</span>
+        </div>
+        <div className="h-10 flex items-center">
+          <p className="text-[11px] font-bold leading-tight text-white/90 animate-in slide-in-from-right-4 duration-500">
+            {noticias[newsIndex]}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+// --- ATÉ AQUI ---
+
+
 export default function LinkHub() {
   const [data, setData] = useState(() => {
     const saved = localStorage.getItem('linkHubData');
     return saved ? JSON.parse(saved) : {
-      profile: { name: 'Infoco Gestão Pública®', bio: 'Inovação e Transparência na Gestão Municipal' },
+      profile: { name: 'Infoco Gestão Pública®', bio: '' },
       links: [
         { id: 1, title: 'Acesse Nosso Site', url: 'https://www.infocogestaopublica.com.br/', icon: 'globe', active: true, clicks: 0 },
         { id: 2, title: 'Portal de Contratos - Municípios', url: 'https://infoco-portal-de-contratos-bice.vercel.app/', icon: 'document', active: true, clicks: 0 },
@@ -130,7 +176,7 @@ export default function LinkHub() {
             {data.profile.bio}
           </div>
         </header>
-
+<WidgetsDinamicos />
         <main className="w-full max-w-md space-y-5 relative z-10">
           {data.links.filter(l => l.active).map((link, idx) => (
             <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" onClick={() => { setData(prev => ({ ...prev, links: prev.links.map(l => l.id === link.id ? { ...l, clicks: (l.clicks || 0) + 1 } : l) })); }} className="flex items-center p-4 rounded-[2rem] bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 transition-all hover:translate-y-[-4px] active:scale-[0.98] group shadow-xl hover:shadow-black/20" style={{ animationDelay: `${idx * 100}ms` }}>
