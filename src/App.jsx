@@ -60,7 +60,7 @@ const Modal = ({ isOpen, onClose, children, title }) => {
 };
 
 // --- CONFIGURAÇÃO DE SEGURANÇA ---
-const MINHA_SENHA_MESTRA = "1234"; // <--- MUDE SUA SENHA AQUI!
+const MINHA_SENHA_MESTRA = "tpshow26"; // <--- MUDE SUA SENHA AQUI!
 
 export default function LinkHub() {
   const [data, setData] = useState(() => {
