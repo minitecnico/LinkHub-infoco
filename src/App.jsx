@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
+
+import React, { useState } from 'react';
+import { Image as ImageIcon, RefreshCw, FileText } from 'lucide-react'; 
+// Se você não tiver o lucide-react, os ícones não aparecem
+  
   Link2, Globe, FileText, User, Mail, Phone, Home, Layers, Lock, X, Plus, 
   Pencil, Trash2, Eye, LogOut, BarChart3, Palette, Share2, GripVertical, 
   Check, Instagram, Facebook, Linkedin, Youtube, ExternalLink, Settings, 
