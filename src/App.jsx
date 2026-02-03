@@ -252,3 +252,89 @@ export default function LinkHub() {
     </div>
   );
 }
+
+// --- SEÇÃO DE FERRAMENTAS API (FINAL DO ARQUIVO) ---
+
+const ToolRemoveBg = () => {
+  const [loading, setLoading] = useState(false);
+  const [resultImage, setResultImage] = useState(null);
+
+  const handleProcessImage = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("image_file", file);
+    formData.append("size", "auto");
+
+    try {
+      const response = await fetch("https://api.remove.bg/v1.0/removebg", {
+        method: "POST",
+        headers: { "X-Api-Key": "Y4z9YG8pYXfi9hLA3F2nqjNP" }, // Sua chave já inserida
+        body: formData,
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        setResultImage(URL.createObjectURL(blob));
+      } else {
+        const errData = await response.json();
+        alert("Erro na API: " + (errData.errors[0].title || "Verifique seus créditos"));
+      }
+    } catch (error) {
+      alert("Erro de conexão. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="p-6 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] hover:border-blue-500/40 transition-all shadow-2xl">
+      <div className="flex items-center gap-4 mb-6">
+        <div className="p-3 bg-blue-600/20 text-blue-400 rounded-2xl"><ImageIcon size={24}/></div>
+        <h3 className="font-black text-white text-lg tracking-tight">Remover Fundo</h3>
+      </div>
+
+      {!resultImage ? (
+        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/10 rounded-3xl cursor-pointer hover:bg-white/5 transition-colors">
+          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+            <p className="text-sm text-slate-400 font-bold italic">
+              {loading ? "Processando..." : "Clique para subir a foto"}
+            </p>
+          </div>
+          <input type="file" className="hidden" onChange={handleProcessImage} accept="image/*" disabled={loading} />
+        </label>
+      ) : (
+        <div className="text-center animate-in zoom-in duration-300">
+          <img src={resultImage} className="max-h-48 mx-auto rounded-xl shadow-lg border border-white/10 mb-4" alt="Resultado" />
+          <div className="flex gap-2">
+            <a href={resultImage} download="infoco-sem-fundo.png" className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all">
+              Baixar PNG
+            </a>
+            <button onClick={() => setResultImage(null)} className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-2xl transition-all">
+              <RefreshCw size={18}/>
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// --- SEÇÃO DE FERRAMENTAS API (FINAL DO ARQUIVO) ---
+
+{/* SEÇÃO DE UTILITÁRIOS */}
+<section className="max-w-2xl mx-auto px-4 mt-16">
+  <h2 className="text-white/30 font-black text-xs uppercase tracking-[0.3em] mb-6 text-center">Ferramentas de Apoio</h2>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    
+    <ToolRemoveBg /> {/* Chamada da ferramenta que criamos lá embaixo */}
+
+    {/* Aqui depois colocaremos a de PDF */}
+    <div className="p-6 bg-white/5 border border-white/5 rounded-[2.5rem] opacity-40 flex items-center justify-center">
+       <span className="text-xs font-bold text-slate-500">Em breve: PDF para Word</span>
+    </div>
+
+  </div>
+</section>
