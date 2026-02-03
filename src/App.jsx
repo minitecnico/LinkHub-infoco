@@ -191,4 +191,14 @@ export default function LinkHub() {
                <div key={l.id} className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
                   <div className="flex-1 space-y-2">
                     <input className="w-full font-bold text-slate-800 outline-none" value={l.title} onChange={(e)=>setData({...data, links: data.links.map(x => x.id === l.id ? {...x, title: e.target.value} : x)})} />
-                    <input className="w-full text-xs text-blue-500 outline-none" value={l.url} onChange={(e)=>setData({...data, links: data.links.map(x => x.
+                    <input className="w-full text-xs text-blue-500 outline-none" value={l.url} onChange={(e)=>setData({...data, links: data.links.map(x => x.id === l.id ? {...x, url: e.target.value} : x)})} />
+                  </div>
+                  <button onClick={()=>setData({...data, links: data.links.filter(x => x.id !== l.id)})} className="text-red-200 hover:text-red-500 transition-colors"><Trash2 size={20}/></button>
+               </div>
+             ))}
+          </section>
+        </div>
+      </main>
+    </div>
+  );
+}
