@@ -192,8 +192,21 @@ export default function LinkHub() {
     </div>
   );
 }
-
 // conversor de pdf-word abaixo
+{/* ... seus links acima ... */}
+
+<section className="mt-12 space-y-4">
+  <h2 className="text-center text-[10px] font-black uppercase tracking-[0.4em] text-white/30">
+    Ferramentas de Apoio
+  </h2>
+  
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <ToolRemoveBg />  {/* Card de Remover Fundo */}
+    <ToolPdfToWord /> {/* Card de PDF para Word - ADICIONE ESTA LINHA */}
+  </div>
+</section>
+
+{/* ... seu footer abaixo ... */}
 
 const ToolPdfToWord = () => {
   const [loading, setLoading] = useState(false);
@@ -291,20 +304,6 @@ const ToolPdfToWord = () => {
     </div>
   );
 };
-{/* ... seus links acima ... */}
-
-<section className="mt-12 space-y-4">
-  <h2 className="text-center text-[10px] font-black uppercase tracking-[0.4em] text-white/30">
-    Ferramentas de Apoio
-  </h2>
-  
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <ToolRemoveBg />  {/* Card de Remover Fundo */}
-    <ToolPdfToWord /> {/* Card de PDF para Word - ADICIONE ESTA LINHA */}
-  </div>
-</section>
-
-{/* ... seu footer abaixo ... */}
 
 
 
