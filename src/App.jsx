@@ -56,18 +56,18 @@ const ToolRemoveBg = () => {
     <div className="p-6 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl">
       <div className="flex items-center gap-4 mb-6">
         <div className="p-3 bg-blue-600/20 text-blue-400 rounded-2xl"><ImageIcon size={24}/></div>
-        <h3 className="font-black text-white text-lg">Remover Fundo</h3>
+        <h3 className="font-black text-white text-lg">Remover Background de imagens</h3>
       </div>
       {!resultImage ? (
         <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/10 rounded-3xl cursor-pointer hover:bg-white/5 transition-colors text-center p-4">
-          <p className="text-sm text-slate-400 font-bold italic">{loading ? "Processando..." : "Subir Foto"}</p>
+          <p className="text-sm text-slate-400 font-bold italic">{loading ? "Processando..." : "Arraste a imagem aqui"}</p>
           <input type="file" className="hidden" onChange={handleProcessImage} accept="image/*" disabled={loading} />
         </label>
       ) : (
         <div className="text-center">
           <img src={resultImage} className="max-h-40 mx-auto rounded-xl mb-4 border border-white/10" alt="Resultado" />
           <div className="flex gap-2">
-            <a href={resultImage} download="sem-fundo.png" className="flex-1 py-3 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase text-center">Baixar</a>
+            <a href={resultImage} download="linkhub.rem.bg.png" className="flex-1 py-3 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase text-center">Baixar</a>
             <button onClick={() => setResultImage(null)} className="p-3 bg-white/5 text-white rounded-2xl"><RefreshCw size={18}/></button>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function LinkHub() {
   const [data, setData] = useState(() => {
     const saved = localStorage.getItem('linkHubData');
     return saved ? JSON.parse(saved) : {
-      profile: { name: 'Infoco Gestão Pública®', bio: 'Inovação e Transparência na Gestão Municipal' },
+      profile: { name: 'Infoco Gestão Pública®', bio: '' },
       links: [
         { id: 1, title: 'Acesse Nosso Site', url: 'https://www.infocogestaopublica.com.br/', icon: 'globe', active: true, clicks: 0 },
         { id: 2, title: 'Portal de Contratos', url: 'https://infoco-portal-de-contratos.vercel.app/', icon: 'document', active: true, clicks: 0 }
@@ -129,10 +129,10 @@ export default function LinkHub() {
           ))}
 
           <div className="mt-12 space-y-4">
-             <h2 className="text-center text-[10px] font-black uppercase tracking-[0.4em] text-white/30">Ferramentas SICC</h2>
+             <h2 className="text-center text-[10px] font-black uppercase tracking-[0.4em] text-white/30"></h2>
              <div className="grid grid-cols-1 gap-4">
                 <ToolRemoveBg />
-                <div className="p-6 bg-white/5 border border-white/5 rounded-[2.5rem] opacity-30 flex items-center justify-center text-[10px] font-bold uppercase text-slate-400">Breve: PDF para Word</div>
+                <div className="p-6 bg-white/5 border border-white/5 rounded-[2.5rem] opacity-30 flex items-center justify-center text-[10px] font-bold uppercase text-slate-400">carregando...</div>
              </div>
           </div>
         </main>
