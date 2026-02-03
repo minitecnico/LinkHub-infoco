@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Link2, Globe, FileText, User, Mail, Phone, Home, Layers, X, Plus, 
-  Trash2, LogOut, BarChart3, Settings, ChevronRight, Info, RefreshCw, 
+  Trash2, LogOut, Settings, ChevronRight, RefreshCw, 
   Image as ImageIcon, Instagram, TrendingUp, Users, Check, Palette
 } from 'lucide-react';
 
@@ -21,16 +21,7 @@ const iconMap = {
   users: Users, settings: Settings, trending: TrendingUp
 };
 
-const adjustColor = (hex, amt) => {
-  const n = parseInt(hex?.replace('#', '') || '000000', 16);
-  const r = Math.min(255, Math.max(0, (n >> 16) + amt));
-  const g = Math.min(255, Math.max(0, ((n >> 8) & 0xFF) + amt));
-  const b = Math.min(255, Math.max(0, (n & 0xFF) + amt));
-  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-};
-
-// --- COMPONENTES DE FERRAMENTAS ---
-
+// --- COMPONENTE REMOVER FUNDO ---
 const ToolRemoveBg = () => {
   const [loading, setLoading] = useState(false);
   const [resultImage, setResultImage] = useState(null);
@@ -58,87 +49,28 @@ const ToolRemoveBg = () => {
   };
 
   return (
-    <div className="p-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem]">
+    <div className="p-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2.5rem] shadow-xl">
       <div className="flex items-center gap-3 mb-4">
-        <ImageIcon size={20} className="text-blue-400" />
-        <h4 className="font-bold text-sm">Remover Fundo</h4>
+        <div className="p-2 bg-blue-500/20 rounded-lg">
+          <ImageIcon size={20} className="text-blue-400" />
+        </div>
+        <h4 className="font-bold text-base text-white">Remover Fundo</h4>
       </div>
       {!resultImage ? (
-        <label className="block border-2 border-dashed border-white/10 rounded-2xl p-4 cursor-pointer hover:bg-white/5 text-center transition-all">
-          <span className="text-xs text-white/40">{loading ? "Processando..." : "Subir Foto"}</span>
+        <label className="block border-2 border-dashed border-white/10 rounded-2xl p-6 cursor-pointer hover:bg-white/5 text-center transition-all group">
+          <span className="text-sm text-white/40 group-hover:text-white/70 transition-colors">
+            {loading ? "Processando..." : "Selecionar Foto"}
+          </span>
           <input type="file" className="hidden" onChange={handleProcessImage} accept="image/*" disabled={loading} />
         </label>
       ) : (
         <div className="text-center">
-          <img src={resultImage} className="max-h-32 mx-auto mb-3 rounded-lg" alt="result" />
+          <img src={resultImage} className="max-h-40 mx-auto mb-4 rounded-xl border border-white/10 shadow-lg" alt="resultado" />
           <div className="flex gap-2">
-            <a href={resultImage} download="bg-removed.png" className="flex-1 bg-blue-600 py-2 rounded-xl text-[10px] font-bold uppercase">Baixar</a>
-            <button onClick={() => setResultImage(null)} className="p-2 bg-white/10 rounded-xl"><RefreshCw size={14}/></button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-const ToolPdfToWord = () => {
-  const [loading, setLoading] = useState(false);
-  const [downloadUrl, setDownloadUrl] = useState(null);
-  const apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMzZlYTkyYzA3NDE2MjIzODdjNTJhMTEwYTk4OGJiN2I1NjA5YjkzNWI4OGJkNzMxZmIwOGVkNmE0MzAzMDI5MDVlMGQ4MjExMTk1YzY1NDIiLCJpYXQiOjE3NzAwODg3MDAuMzA5MTE3LCJuYmYiOjE3NzAwODg3MDAuMzA5MTE5LCJleHAiOjQ5MjU3NjIzMDAuMzAyMTUyLCJzdWIiOiI3NDE1MjY3NSIsInNjb3BlcyI6W119.Gdd-Il44MZx50a_5_9nccK-5SrGHawojVANVJYJ26XdaqHSB4BKZ-5x7IKx_Sxv_b1ulHBj9lDPXBIYjxUhkfiNrf6N-G_I9YlJoNw88LGyzBg6s3nb1jMODv3wboEab5eCN79cYt87V16QKvPOidI4cWQQZjc4VWfU3SHkLV5Ei9M6T6Cyr82PGEGYVHDuWtVVLJV3alkSHFV9inARCYgjz12a26ECkLLpv3lw7NJF3NoKgEXjlJL_P4-M5zqTXToGCb54UuHSplwUSuUR0kI9mtbFxHHU1_BJOs5g2oidMa738-M6OnsI_ewtk9OmW9y-0wRR9afHCM4O3YVwyOC5SuYfbH4rJfTh3fSdqKsWG59TTs6D8uiZ5PL4grsWlO9QnyBXGlpe-YD-XJJy90uq1l_8XV8jt5TDh_67xQvtLmE3LHbuoZgBVwEbtGrIv6OFHK2X4tNU0ooMgRJulyeHtKdVg_NarKevU9SpFzwsmAMEHx1gCz0uVouRj4jxilbzn3_QKeH3z5B3DwXdt00z4bETPjbo7Oh6MnJ5bIHYh6B3dhfdsCY4FhHdlecLYX_ir5366N6vaF-8g3QJkzU4NUdfgVmnU3AeC17jLTLtizV87ZQhO58BshazYcZOcFD5STOSSQAEipaLt7JZzhPZgEPRsGtMG2EYwsmgAHE0";
-
-  const handleConvert = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setLoading(true);
-    try {
-      const res = await fetch("https://api.cloudconvert.com/v2/jobs", {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tasks: {
-            "import-1": { operation: "import/upload" },
-            "task-1": { operation: "convert", input: "import-1", output_format: "docx", input_format: "pdf" },
-            "export-1": { operation: "export/url", input: "task-1" }
-          }
-        })
-      });
-      const job = await res.json();
-      const upload = job.data.tasks.find(t => t.name === "import-1");
-      const fd = new FormData();
-      Object.entries(upload.result.form.parameters).forEach(([k, v]) => fd.append(k, v));
-      fd.append("file", file);
-      await fetch(upload.result.form.url, { method: "POST", body: fd });
-
-      const timer = setInterval(async () => {
-        const sRes = await fetch(`https://api.cloudconvert.com/v2/jobs/${job.data.id}`, { headers: { "Authorization": `Bearer ${apiKey}` } });
-        const sData = await sRes.json();
-        const exportT = sData.data.tasks.find(t => t.name === "export-1");
-        if (exportT.status === "finished") {
-          clearInterval(timer);
-          setDownloadUrl(exportT.result.files[0].url);
-          setLoading(false);
-        }
-      }, 3000);
-    } catch (err) { setLoading(false); }
-  };
-
-  return (
-    <div className="p-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem]">
-      <div className="flex items-center gap-3 mb-4">
-        <FileText size={20} className="text-blue-400" />
-        <h4 className="font-bold text-sm">PDF para Word</h4>
-      </div>
-      {!downloadUrl ? (
-        <label className="block border-2 border-dashed border-white/10 rounded-2xl p-4 cursor-pointer hover:bg-white/5 text-center transition-all">
-          <span className="text-xs text-white/40">{loading ? "Convertendo..." : "Subir PDF"}</span>
-          <input type="file" className="hidden" onChange={handleConvert} accept=".pdf" disabled={loading} />
-        </label>
-      ) : (
-        <div className="text-center">
-          <Check size={32} className="mx-auto text-green-400 mb-2" />
-          <div className="flex gap-2">
-            <a href={downloadUrl} target="_blank" rel="noreferrer" className="flex-1 bg-blue-600 py-2 rounded-xl text-[10px] font-bold uppercase">Baixar Docx</a>
-            <button onClick={() => setDownloadUrl(null)} className="p-2 bg-white/10 rounded-xl"><RefreshCw size={14}/></button>
+            <a href={resultImage} download="sem-fundo.png" className="flex-1 bg-blue-600 hover:bg-blue-700 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-colors">Baixar PNG</a>
+            <button onClick={() => setResultImage(null)} className="p-3 bg-white/10 hover:bg-white/20 rounded-2xl transition-all">
+              <RefreshCw size={18} className="text-white" />
+            </button>
           </div>
         </div>
       )}
@@ -147,14 +79,13 @@ const ToolPdfToWord = () => {
 };
 
 // --- COMPONENTE PRINCIPAL ---
-
 export default function LinkHub() {
   const [data, setData] = useState(() => {
     const saved = localStorage.getItem('linkHubData');
     return saved ? JSON.parse(saved) : {
       profile: { name: 'Infoco Gestão Pública®', bio: 'Inovação e Transparência na Gestão Municipal' },
       links: [
-        { id: 1, title: 'Site Oficial', url: 'https://infocogestaopublica.com.br/', icon: 'globe', active: true, clicks: 0 },
+        { id: 1, title: 'Site Oficial', url: 'https://infocogestaopublica.com.br/', icon: 'globe', active: true },
       ],
       appearance: { primaryColor: '#0052D4', background: THEMES.blue.bg },
       social: { instagram: 'https://instagram.com/', whatsapp: '5573981019313' }
@@ -174,9 +105,9 @@ export default function LinkHub() {
 
   if (view === 'public') {
     return (
-      <div className="min-h-screen text-white flex flex-col items-center py-16 px-6 relative overflow-hidden" style={{ background: dynamicStyles.background }}>
+      <div className="min-h-screen text-white flex flex-col items-center py-16 px-6 relative overflow-hidden transition-all duration-700" style={{ background: dynamicStyles.background }}>
         <header className="text-center mb-12 z-10">
-          <div className="w-24 h-24 bg-white/10 backdrop-blur-2xl rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-white/20 shadow-2xl">
+          <div className="w-24 h-24 bg-white/10 backdrop-blur-2xl rounded-[2.2rem] flex items-center justify-center mx-auto mb-6 border border-white/20 shadow-2xl animate-pulse-slow">
             <Layers size={40} strokeWidth={1} />
           </div>
           <h1 className="text-3xl font-black mb-2 tracking-tight">{data.profile.name}</h1>
@@ -184,37 +115,34 @@ export default function LinkHub() {
         </header>
 
         <main className="w-full max-w-md space-y-4 z-10">
-          {data.links.filter(l => l.active).map(link => (
-            <a key={link.id} href={link.url} target="_blank" rel="noreferrer" className="flex items-center p-4 rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur-xl hover:bg-white/10 transition-all shadow-lg">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/10">
+          {data.links.map(link => (
+            <a key={link.id} href={link.url} target="_blank" rel="noreferrer" className="flex items-center p-4 rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur-xl hover:bg-white/10 hover:scale-[1.02] transition-all shadow-lg group">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/10 group-hover:bg-white/20 transition-colors">
                 {React.createElement(iconMap[link.icon] || Globe, { size: 24 })}
               </div>
               <div className="ml-5 flex-1 font-bold text-lg">{link.title}</div>
-              <ChevronRight size={20} className="opacity-40" />
+              <ChevronRight size={20} className="opacity-40 group-hover:opacity-100 transition-opacity" />
             </a>
           ))}
 
           <section className="mt-12 space-y-4">
-             <h2 className="text-center text-[10px] font-black uppercase tracking-[0.4em] text-white/30">Ferramentas de Apoio</h2>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <ToolRemoveBg />
-                <ToolPdfToWord />
-             </div>
+             <h2 className="text-center text-[10px] font-black uppercase tracking-[0.4em] text-white/30">Ferramentas Inteligentes</h2>
+             <ToolRemoveBg />
           </section>
         </main>
 
         <footer className="mt-12 flex gap-6 opacity-60">
-          <a href={data.social.instagram}><Instagram size={22} /></a>
-          <button onClick={() => setIsLoginOpen(true)} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 hover:bg-white hover:text-black transition-all"><Settings size={18} /></button>
+          <a href={data.social.instagram} className="hover:text-white transition-colors"><Instagram size={22} /></a>
+          <button onClick={() => setIsLoginOpen(true)} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 hover:bg-white hover:text-black transition-all shadow-lg"><Settings size={18} /></button>
         </footer>
 
         {isLoginOpen && (
-          <div className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[100] flex items-center justify-center p-6">
-            <div className="bg-white rounded-[2.5rem] p-8 w-full max-w-sm text-slate-900">
+          <div className="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[100] flex items-center justify-center p-6">
+            <div className="bg-white rounded-[2.5rem] p-8 w-full max-w-sm text-slate-900 shadow-2xl">
               <h2 className="text-2xl font-black mb-6">Acesso Admin</h2>
-              <input className="w-full p-4 bg-slate-100 rounded-2xl mb-4 outline-none border-2 border-transparent focus:border-blue-500" type="password" placeholder="Senha" onChange={(e)=>setPasswordInput(e.target.value)} />
-              <button onClick={() => { if(passwordInput === MINHA_SENHA_MESTRA) { setView('admin'); setIsLoginOpen(false); } else alert("Erro!"); }} className="w-full p-4 bg-blue-600 text-white rounded-2xl font-black shadow-lg">Entrar</button>
-              <button onClick={()=>setIsLoginOpen(false)} className="w-full mt-2 text-slate-400 font-bold text-sm">Cancelar</button>
+              <input className="w-full p-4 bg-slate-100 rounded-2xl mb-4 outline-none border-2 border-transparent focus:border-blue-500 transition-all" type="password" placeholder="Senha" onChange={(e)=>setPasswordInput(e.target.value)} />
+              <button onClick={() => { if(passwordInput === MINHA_SENHA_MESTRA) { setView('admin'); setIsLoginOpen(false); } else alert("Senha Incorreta!"); }} className="w-full p-4 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-colors">Entrar</button>
+              <button onClick={()=>setIsLoginOpen(false)} className="w-full mt-4 text-slate-400 font-bold text-sm">Voltar</button>
             </div>
           </div>
         )}
@@ -222,56 +150,45 @@ export default function LinkHub() {
     );
   }
 
-  // --- VIEW ADMIN ---
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row text-slate-900">
-      <aside className="w-80 bg-white border-r p-8 hidden md:flex flex-col">
-        <h2 className="font-black text-2xl mb-12 flex items-center gap-2"><Settings className="text-blue-600" /> Admin</h2>
+      <aside className="w-80 bg-white border-r p-8 hidden md:flex flex-col shadow-sm">
+        <h2 className="font-black text-2xl mb-12 flex items-center gap-2"><Settings className="text-blue-600" /> Painel SICC</h2>
         <nav className="flex-1 space-y-4">
-          <div className="p-4 bg-slate-100 rounded-2xl font-bold flex items-center gap-3"><Layers size={20}/> LinkHub Dashboard</div>
+          <div className="p-4 bg-blue-50 text-blue-700 rounded-2xl font-bold flex items-center gap-3 border border-blue-100"><Layers size={20}/> LinkHub Manager</div>
         </nav>
-        <button onClick={() => setView('public')} className="p-4 bg-red-50 text-red-600 rounded-2xl font-bold flex items-center gap-2"><LogOut size={20}/> Sair</button>
+        <button onClick={() => setView('public')} className="p-4 bg-red-50 text-red-600 rounded-2xl font-bold flex items-center gap-2 hover:bg-red-100 transition-colors"><LogOut size={20}/> Sair</button>
       </aside>
 
       <main className="flex-1 p-8 md:p-16 overflow-y-auto">
         <div className="max-w-3xl mx-auto space-y-10">
           <section className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
-            <h3 className="text-xl font-black mb-6 flex items-center gap-2"><Palette className="text-blue-600" /> Temas Visuais</h3>
+            <h3 className="text-xl font-black mb-6 flex items-center gap-2"><Palette className="text-blue-600" /> Estilo & Temas</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {Object.keys(THEMES).map(k => (
-                <button key={k} onClick={() => setData({...data, appearance: { primaryColor: THEMES[k].primary, background: THEMES[k].bg }})} className="p-3 border-2 border-slate-100 rounded-2xl hover:border-blue-500 transition-all text-center">
-                  <div className="h-10 w-full rounded-lg mb-2" style={{ background: THEMES[k].bg }} />
-                  <span className="text-[10px] font-black uppercase">{THEMES[k].name}</span>
+                <button key={k} onClick={() => setData({...data, appearance: { primaryColor: THEMES[k].primary, background: THEMES[k].bg }})} className="p-3 border-2 border-slate-100 rounded-2xl hover:border-blue-500 transition-all text-center group">
+                  <div className="h-12 w-full rounded-xl mb-2 group-hover:scale-95 transition-transform shadow-inner" style={{ background: THEMES[k].bg }} />
+                  <span className="text-[10px] font-black uppercase tracking-tighter">{THEMES[k].name}</span>
                 </button>
               ))}
             </div>
           </section>
 
           <section className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
-            <h3 className="text-xl font-black mb-6 flex items-center gap-2"><User className="text-blue-600" /> Perfil</h3>
+            <h3 className="text-xl font-black mb-6 flex items-center gap-2"><User className="text-blue-600" /> Informações do Perfil</h3>
             <div className="space-y-4">
-               <input className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200" value={data.profile.name} onChange={(e)=>setData({...data, profile: {...data.profile, name: e.target.value}})} placeholder="Nome da Empresa" />
-               <input className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200" value={data.profile.bio} onChange={(e)=>setData({...data, profile: {...data.profile, bio: e.target.value}})} placeholder="Bio/Descrição" />
+               <input className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:border-blue-500 transition-all" value={data.profile.name} onChange={(e)=>setData({...data, profile: {...data.profile, name: e.target.value}})} placeholder="Nome da Empresa" />
+               <input className="w-full p-4 bg-slate-50 rounded-xl border border-slate-200 outline-none focus:border-blue-500 transition-all" value={data.profile.bio} onChange={(e)=>setData({...data, profile: {...data.profile, bio: e.target.value}})} placeholder="Breve Descrição" />
             </div>
           </section>
 
           <section className="space-y-4">
-             <div className="flex justify-between items-center">
-                <h3 className="text-xl font-black">Links Ativos</h3>
-                <button onClick={() => setData({...data, links: [{id: Date.now(), title: 'Novo Link', url: '#', icon: 'link', active: true, clicks: 0}, ...data.links]})} className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-md hover:scale-105 transition-all">+ Adicionar</button>
+             <div className="flex justify-between items-center px-2">
+                <h3 className="text-xl font-black">Links</h3>
+                <button onClick={() => setData({...data, links: [{id: Date.now(), title: 'Novo Link', url: 'https://', icon: 'link', active: true}, ...data.links]})} className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-lg hover:bg-blue-700 transition-colors">+ Novo Link</button>
              </div>
              {data.links.map(l => (
-               <div key={l.id} className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-4">
+               <div key={l.id} className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
                   <div className="flex-1 space-y-2">
                     <input className="w-full font-bold text-slate-800 outline-none" value={l.title} onChange={(e)=>setData({...data, links: data.links.map(x => x.id === l.id ? {...x, title: e.target.value} : x)})} />
-                    <input className="w-full text-xs text-blue-500 outline-none" value={l.url} onChange={(e)=>setData({...data, links: data.links.map(x => x.id === l.id ? {...x, url: e.target.value} : x)})} />
-                  </div>
-                  <button onClick={()=>setData({...data, links: data.links.filter(x => x.id !== l.id)})} className="text-red-300 hover:text-red-500"><Trash2 size={20}/></button>
-               </div>
-             ))}
-          </section>
-        </div>
-      </main>
-    </div>
-  );
-}
+                    <input className="w-full text-xs text-blue-500 outline-none" value={l.url} onChange={(e)=>setData({...data, links: data.links.map(x => x.
