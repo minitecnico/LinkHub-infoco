@@ -192,3 +192,122 @@ export default function LinkHub() {
     </div>
   );
 }
+
+// conversor de pdf-word abaixo
+
+const ToolPdfToWord = () => {
+  const [loading, setLoading] = useState(false);
+  const [downloadUrl, setDownloadUrl] = useState(null);
+  const apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMzZlYTkyYzA3NDE2MjIzODdjNTJhMTEwYTk4OGJiN2I1NjA5YjkzNWI4OGJkNzMxZmIwOGVkNmE0MzAzMDI5MDVlMGQ4MjExMTk1YzY1NDIiLCJpYXQiOjE3NzAwODg3MDAuMzA5MTE3LCJuYmYiOjE3NzAwODg3MDAuMzA5MTE5LCJleHAiOjQ5MjU3NjIzMDAuMzAyMTUyLCJzdWIiOiI3NDE1MjY3NSIsInNjb3BlcyI6W119.Gdd-Il44MZx50a_5_9nccK-5SrGHawojVANVJYJ26XdaqHSB4BKZ-5x7IKx_Sxv_b1ulHBj9lDPXBIYjxUhkfiNrf6N-G_I9YlJoNw88LGyzBg6s3nb1jMODv3wboEab5eCN79cYt87V16QKvPOidI4cWQQZjc4VWfU3SHkLV5Ei9M6T6Cyr82PGEGYVHDuWtVVLJV3alkSHFV9inARCYgjz12a26ECkLLpv3lw7NJF3NoKgEXjlJL_P4-M5zqTXToGCb54UuHSplwUSuUR0kI9mtbFxHHU1_BJOs5g2oidMa738-M6OnsI_ewtk9OmW9y-0wRR9afHCM4O3YVwyOC5SuYfbH4rJfTh3fSdqKsWG59TTs6D8uiZ5PL4grsWlO9QnyBXGlpe-YD-XJJy90uq1l_8XV8jt5TDh_67xQvtLmE3LHbuoZgBVwEbtGrIv6OFHK2X4tNU0ooMgRJulyeHtKdVg_NarKevU9SpFzwsmAMEHx1gCz0uVouRj4jxilbzn3_QKeH3z5B3DwXdt00z4bETPjbo7Oh6MnJ5bIHYh6B3dhfdsCY4FhHdlecLYX_ir5366N6vaF-8g3QJkzU4NUdfgVmnU3AeC17jLTLtizV87ZQhO58BshazYcZOcFD5STOSSQAEipaLt7JZzhPZgEPRsGtMG2EYwsmgAHE0";
+
+  const handleConvert = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setLoading(true);
+    try {
+      // 1. Criar o JOB na CloudConvert
+      const response = await fetch("https://api.cloudconvert.com/v2/jobs", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          tasks: {
+            "import-1": { operation: "import/upload" },
+            "task-1": {
+              operation: "convert",
+              input: "import-1",
+              output_format: "docx",
+              input_format: "pdf"
+            },
+            "export-1": { operation: "export/url", input: "task-1" }
+          }
+        })
+      });
+
+      const jobData = await response.json();
+      const uploadTask = jobData.data.tasks.find(t => t.name === "import-1");
+
+      // 2. Upload do arquivo real
+      const formData = new FormData();
+      Object.entries(uploadTask.result.form.parameters).forEach(([k, v]) => formData.append(k, v));
+      formData.append("file", file);
+
+      await fetch(uploadTask.result.form.url, { method: "POST", body: formData });
+
+      // 3. Monitorar o status (Polling)
+      const timer = setInterval(async () => {
+        const statusRes = await fetch(`https://api.cloudconvert.com/v2/jobs/${jobData.data.id}`, {
+          headers: { "Authorization": `Bearer ${apiKey}` }
+        });
+        const statusData = await statusRes.json();
+        const exportTask = statusData.data.tasks.find(t => t.name === "export-1");
+
+        if (exportTask.status === "finished") {
+          clearInterval(timer);
+          setDownloadUrl(exportTask.result.files[0].url);
+          setLoading(false);
+        } else if (exportTask.status === "error") {
+          clearInterval(timer);
+          alert("Erro na conversão do PDF.");
+          setLoading(false);
+        }
+      }, 3000);
+
+    } catch (error) {
+      console.error(error);
+      alert("Falha ao conectar com CloudConvert.");
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="p-6 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl transition-all hover:border-blue-500/30">
+      <div className="flex items-center gap-4 mb-6">
+        <div className="p-3 bg-blue-600/20 text-blue-400 rounded-2xl"><FileText size={24}/></div>
+        <h3 className="font-black text-white text-lg tracking-tight">PDF para Word</h3>
+      </div>
+      
+      {!downloadUrl ? (
+        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/10 rounded-3xl cursor-pointer hover:bg-white/5 transition-colors text-center p-4">
+          <p className="text-sm text-slate-400 font-bold italic">
+            {loading ? "Processando Documento..." : "Selecionar PDF"}
+          </p>
+          <input type="file" className="hidden" onChange={handleConvert} accept=".pdf" disabled={loading} />
+        </label>
+      ) : (
+        <div className="text-center animate-in zoom-in duration-300">
+          <div className="w-16 h-16 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Check size={32} />
+          </div>
+          <div className="flex gap-2">
+            <a href={downloadUrl} target="_blank" rel="noreferrer" className="flex-1 py-3 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase text-center shadow-lg shadow-blue-600/20">Baixar Word</a>
+            <button onClick={() => setDownloadUrl(null)} className="p-3 bg-white/5 text-white rounded-2xl hover:bg-white/10 transition-all"><RefreshCw size={18}/></button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+{/* ... seus links acima ... */}
+
+<section className="mt-12 space-y-4">
+  <h2 className="text-center text-[10px] font-black uppercase tracking-[0.4em] text-white/30">
+    Ferramentas de Apoio
+  </h2>
+  
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <ToolRemoveBg />  {/* Card de Remover Fundo */}
+    <ToolPdfToWord /> {/* Card de PDF para Word - ADICIONE ESTA LINHA */}
+  </div>
+</section>
+
+{/* ... seu footer abaixo ... */}
+
+
+
+
+
+
