@@ -9,12 +9,7 @@ import {
   TrendingUp, Users, Crown, Diamond, Flame, ChevronRight, Info, MousePointer2
 } from 'lucide-react';
 
-import React, { useState } from 'react';
-import { Image as ImageIcon, RefreshCw, FileText } from 'lucide-react'; 
-// Se você não tiver o lucide-react, os ícones não aparecem
-
-
-const iconMap = { 
+iconst iconMap = { 
   link: Link2, globe: Globe, document: FileText, user: User, mail: Mail, 
   phone: Phone, home: Home, layers: Layers, sparkles: Sparkles, zap: Zap, 
   star: Star, heart: Heart, shop: ShoppingBag, calendar: Calendar, 
